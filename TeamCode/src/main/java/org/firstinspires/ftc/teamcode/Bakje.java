@@ -11,10 +11,9 @@ public class Bakje extends LinearOpMode {
 
     private DcMotor motor;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
-        motor = hardwareMap.dcMotor.get("motor");
+        motor = hardwareMap.dcMotor.get("RBD");
 
         waitForStart();
 
