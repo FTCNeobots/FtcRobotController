@@ -72,10 +72,10 @@ public class FieldCentricDrive extends LinearOpMode {
 
         double denominator = Math.max(Math.abs(_Y) + Math.abs(_X) + Math.abs(_Turn), maxSpeed);
 
-        leftFrontDrive.setPower((_Y - _X + _Turn)/denominator);
-        leftBackDrive.setPower((_Y + _X + _Turn)/denominator);
-        rightBackDrive.setPower((_Y - _X - _Turn)/denominator);
-        rightFrontDrive.setPower((_Y + _X - _Turn)/denominator);
+        leftFrontDrive.setPower((_Y - _X + _Turn)*denominator);
+        leftBackDrive.setPower((_Y + _X + _Turn)*denominator);
+        rightBackDrive.setPower((_Y - _X - _Turn)*denominator);
+        rightFrontDrive.setPower((_Y + _X - _Turn)*denominator);
 
     }
     private void SpeedControl(){
