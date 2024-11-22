@@ -20,6 +20,7 @@ public class FieldCentricDrive extends LinearOpMode {
 
     private double maxSpeed = 1;
     private double botHeading;
+    private double turnSpeed = 1;
 
 
 
@@ -34,6 +35,7 @@ public class FieldCentricDrive extends LinearOpMode {
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         //dit hoort niet te hoeven, maar zo werkt het?
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
@@ -67,22 +69,40 @@ public class FieldCentricDrive extends LinearOpMode {
 
         double _X = _Xget * Math.cos(botHeading) - _Yget * Math.sin(botHeading);
         double _Y = _Xget * Math.sin(botHeading) + _Yget * Math.cos(botHeading);
-        double _Turn = 0.5 * _Turnget;
+        double _Turn = _Turnget * turnSpeed;
         _X = _X *1.1;
 
-        double denominator = Math.max(Math.abs(_Y) + Math.abs(_X) + Math.abs(_Turn), maxSpeed);
 
-        leftFrontDrive.setPower((_Y - _X + _Turn)*denominator);
-        leftBackDrive.setPower((_Y + _X + _Turn)*denominator);
-        rightBackDrive.setPower((_Y - _X - _Turn)*denominator);
-        rightFrontDrive.setPower((_Y + _X - _Turn)*denominator);
+        double _LFSpeed = mathLogic.Clamp(_Y - _X + _Turn, -1, 1)*maxSpeed;
+        double _LBSpeed = mathLogic.Clamp(_Y + _X + _Turn, -1, 1)*maxSpeed;
+        double _RBSpeed = mathLogic.Clamp(_Y - _X - _Turn, -1, 1)*maxSpeed;
+        double _RFSpeed = mathLogic.Clamp(_Y + _X - _Turn, -1, 1)*maxSpeed;
+
+        telemetry.addData("Left front ", _LFSpeed);
+        telemetry.addData("Left back ", _LBSpeed);
+        telemetry.addData("Right back ", _RBSpeed);
+        telemetry.addData("Right front ", _RFSpeed);
+        telemetry.update();
+
+        leftFrontDrive.setPower(_LFSpeed);
+        leftBackDrive.setPower(_LBSpeed);
+        rightBackDrive.setPower(_RBSpeed);
+        rightFrontDrive.setPower(_RFSpeed);
 
     }
     private void SpeedControl(){
         if(gamepad1.left_bumper){
             maxSpeed = 0.5;
+            turnSpeed = 2;
+
+            telemetry.addData("Max speed ", maxSpeed);
+            telemetry.update();
         }else if(gamepad1.right_bumper){
             maxSpeed = 1;
+            turnSpeed = 1;
+
+            telemetry.addData("Max speed ", maxSpeed);
+            telemetry.update();
         }
 
     }
