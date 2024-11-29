@@ -14,18 +14,23 @@ public class Bakje extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         motor = hardwareMap.dcMotor.get("test");
-
+        double speed = 0.2;
         waitForStart();
 
         while (opModeIsActive()){
-            /*if(gamepad1.a){
-                motor.setPower(1);
+            if(gamepad1.a){
+                motor.setPower(speed);
             }else if(gamepad1.b){
-                motor.setPower(-1);
+                motor.setPower(-speed);
             }else{
                 motor.setPower(0);
-            }*/
-            motor.setPower(gamepad1.left_stick_x + 0.5 * gamepad1.right_stick_x);
+            }
+            if(gamepad1.left_bumper){
+                speed = 0.2;
+            }
+            if(gamepad1.right_bumper){
+                speed =0.5;
+            }
 
         }
 
