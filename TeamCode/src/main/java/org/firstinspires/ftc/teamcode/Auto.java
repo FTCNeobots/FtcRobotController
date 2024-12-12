@@ -15,9 +15,9 @@ public class Auto extends LinearOpMode {
     private DcMotor rightBackDrive;
     //according to REV 28 per revolution, *15 because of gearbox
     double countsPerRevolution = 28 * 15;
-    double cmPerRevolution = 31.4;
+    double cmPerRevolution = 35.87;
     double ticksPerCm = countsPerRevolution/cmPerRevolution;
-    double rotationRatio = 11.046;
+    double rotationRatio = 6.2;
     double power = 0.5;
 
     @Override
@@ -27,10 +27,6 @@ public class Auto extends LinearOpMode {
         leftFrontDrive = hardwareMap.dcMotor.get("LFD");
         rightBackDrive = hardwareMap.dcMotor.get("RBD");
         rightFrontDrive = hardwareMap.dcMotor.get("RFD");
-
-        rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -44,10 +40,7 @@ public class Auto extends LinearOpMode {
 
         waitForStart();
 
-        Straight(power, -100);
-        Turn(power, 90);
-        Strafe(power, -100);
-
+        Turn(0.5, 90);
 
 
         telemetry.addData("Path", "Complete");
@@ -58,20 +51,17 @@ public class Auto extends LinearOpMode {
     private void Straight(double speed, double cm){
         int newTarget;
 
-
         if(opModeIsActive()){
             leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
             newTarget = leftFrontDrive.getCurrentPosition() + (int)(cm * ticksPerCm);
             leftFrontDrive.setTargetPosition(newTarget);
             leftBackDrive.setTargetPosition(newTarget);
             rightFrontDrive.setTargetPosition(newTarget);
             rightBackDrive.setTargetPosition(newTarget);
-
 
             leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -83,7 +73,6 @@ public class Auto extends LinearOpMode {
             leftBackDrive.setPower(speed);
             rightBackDrive.setPower(speed);
 
-
             while (opModeIsActive() &&
                     leftFrontDrive.isBusy()) {
                 telemetry.addData("Running to",  " %7d", newTarget);
@@ -91,7 +80,6 @@ public class Auto extends LinearOpMode {
                         leftFrontDrive.getCurrentPosition());
                 telemetry.update();
             }
-
 
             leftFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
@@ -108,20 +96,17 @@ public class Auto extends LinearOpMode {
     private void Turn(double speed, double degrees) {
         int newTarget;
 
-
         if (opModeIsActive()) {
             leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
             newTarget = leftFrontDrive.getCurrentPosition() + (int) (degrees/360 * countsPerRevolution * rotationRatio);
             leftFrontDrive.setTargetPosition(newTarget);
             leftBackDrive.setTargetPosition(newTarget);
             rightFrontDrive.setTargetPosition(-newTarget);
             rightBackDrive.setTargetPosition(-newTarget);
-
 
             leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -133,15 +118,22 @@ public class Auto extends LinearOpMode {
             leftBackDrive.setPower(speed);
             rightBackDrive.setPower(speed);
 
-
             while (opModeIsActive() &&
                     leftFrontDrive.isBusy()) {
                 telemetry.addData("Running to", " %7d", newTarget);
                 telemetry.addData("Currently at", " at %7d",
+                        leftBackDrive.getCurrentPosition());
+                telemetry.addData("Running to", " %7d", newTarget);
+                telemetry.addData("Currently at", " at %7d",
+                        rightFrontDrive.getCurrentPosition());
+                telemetry.addData("Running to", " %7d", newTarget);
+                telemetry.addData("Currently at", " at %7d",
                         leftFrontDrive.getCurrentPosition());
+                telemetry.addData("Running to", " %7d", newTarget);
+                telemetry.addData("Currently at", " at %7d",
+                        rightBackDrive.getCurrentPosition());
                 telemetry.update();
             }
-
 
             leftFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
@@ -158,20 +150,17 @@ public class Auto extends LinearOpMode {
     private void Strafe(double speed, double cm){
         int newTarget;
 
-
         if(opModeIsActive()){
             leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
             newTarget = leftFrontDrive.getCurrentPosition() + (int)(cm * ticksPerCm);
             leftFrontDrive.setTargetPosition(newTarget);
             leftBackDrive.setTargetPosition(-newTarget);
             rightFrontDrive.setTargetPosition(-newTarget);
             rightBackDrive.setTargetPosition(newTarget);
-
 
             leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -183,7 +172,6 @@ public class Auto extends LinearOpMode {
             leftBackDrive.setPower(speed);
             rightBackDrive.setPower(speed);
 
-
             while (opModeIsActive() &&
                     leftFrontDrive.isBusy()) {
                 telemetry.addData("Running to",  " %7d", newTarget);
@@ -191,7 +179,6 @@ public class Auto extends LinearOpMode {
                         leftFrontDrive.getCurrentPosition());
                 telemetry.update();
             }
-
 
             leftFrontDrive.setPower(0);
             leftBackDrive.setPower(0);
