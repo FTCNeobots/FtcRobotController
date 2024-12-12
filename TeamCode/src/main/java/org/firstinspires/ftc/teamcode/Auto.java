@@ -13,10 +13,11 @@ public class Auto extends LinearOpMode {
     private DcMotor rightFrontDrive;
     private DcMotor leftBackDrive;
     private DcMotor rightBackDrive;
-
+    //according to REV 28 per revolution, *15 because of gearbox
     double countsPerRevolution = 28 * 15;
     double cmPerRevolution = 31.4;
     double ticksPerCm = countsPerRevolution/cmPerRevolution;
+    double rotationRatio = 11.046;
     double power = 0.5;
 
     @Override
@@ -41,45 +42,169 @@ public class Auto extends LinearOpMode {
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //according to REV 28 per revolution, *15 because of gearbox
-
-
-
         waitForStart();
-        Strafe(-10);
-        Strafe(20);
+
+        Straight(power, -100);
+        Turn(power, 90);
+        Strafe(power, -100);
+
+
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(5000);
     }
 
-
-    public void Strafe(double _cm){
-        int _target = (int) (_cm * cmPerRevolution);
-        telemetry.addData("target: ", _target);
-        telemetry.update();
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftBackDrive.setTargetPosition(_target);
-        leftFrontDrive.setTargetPosition(- _target);
-        rightBackDrive.setTargetPosition(- _target);
-        rightFrontDrive.setTargetPosition(_target);
-
-        leftBackDrive.setPower(power);
-        leftFrontDrive.setPower(power);
-        rightBackDrive.setPower(power);
-        rightFrontDrive.setPower(power);
-
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    private void Straight(double speed, double cm){
+        int newTarget;
 
 
+        if(opModeIsActive()){
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
+            newTarget = leftFrontDrive.getCurrentPosition() + (int)(cm * ticksPerCm);
+            leftFrontDrive.setTargetPosition(newTarget);
+            leftBackDrive.setTargetPosition(newTarget);
+            rightFrontDrive.setTargetPosition(newTarget);
+            rightBackDrive.setTargetPosition(newTarget);
+
+
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            leftFrontDrive.setPower(speed);
+            rightFrontDrive.setPower(speed);
+            leftBackDrive.setPower(speed);
+            rightBackDrive.setPower(speed);
+
+
+            while (opModeIsActive() &&
+                    leftFrontDrive.isBusy()) {
+                telemetry.addData("Running to",  " %7d", newTarget);
+                telemetry.addData("Currently at",  " at %7d",
+                        leftFrontDrive.getCurrentPosition());
+                telemetry.update();
+            }
+
+
+            leftFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            sleep(250);
+        }
     }
+    private void Turn(double speed, double degrees) {
+        int newTarget;
+
+
+        if (opModeIsActive()) {
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+            newTarget = leftFrontDrive.getCurrentPosition() + (int) (degrees/360 * countsPerRevolution * rotationRatio);
+            leftFrontDrive.setTargetPosition(newTarget);
+            leftBackDrive.setTargetPosition(newTarget);
+            rightFrontDrive.setTargetPosition(-newTarget);
+            rightBackDrive.setTargetPosition(-newTarget);
+
+
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            leftFrontDrive.setPower(speed);
+            rightFrontDrive.setPower(speed);
+            leftBackDrive.setPower(speed);
+            rightBackDrive.setPower(speed);
+
+
+            while (opModeIsActive() &&
+                    leftFrontDrive.isBusy()) {
+                telemetry.addData("Running to", " %7d", newTarget);
+                telemetry.addData("Currently at", " at %7d",
+                        leftFrontDrive.getCurrentPosition());
+                telemetry.update();
+            }
+
+
+            leftFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            sleep(250);
+        }
+    }
+    private void Strafe(double speed, double cm){
+        int newTarget;
+
+
+        if(opModeIsActive()){
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+            newTarget = leftFrontDrive.getCurrentPosition() + (int)(cm * ticksPerCm);
+            leftFrontDrive.setTargetPosition(newTarget);
+            leftBackDrive.setTargetPosition(-newTarget);
+            rightFrontDrive.setTargetPosition(-newTarget);
+            rightBackDrive.setTargetPosition(newTarget);
+
+
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            leftFrontDrive.setPower(speed);
+            rightFrontDrive.setPower(speed);
+            leftBackDrive.setPower(speed);
+            rightBackDrive.setPower(speed);
+
+
+            while (opModeIsActive() &&
+                    leftFrontDrive.isBusy()) {
+                telemetry.addData("Running to",  " %7d", newTarget);
+                telemetry.addData("Currently at",  " at %7d",
+                        leftFrontDrive.getCurrentPosition());
+                telemetry.update();
+            }
+
+
+            leftFrontDrive.setPower(0);
+            leftBackDrive.setPower(0);
+            rightFrontDrive.setPower(0);
+            rightBackDrive.setPower(0);
+
+            leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            sleep(250);
+        }
+    }
+
+
 }
