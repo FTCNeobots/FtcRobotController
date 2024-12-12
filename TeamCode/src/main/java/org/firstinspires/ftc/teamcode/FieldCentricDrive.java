@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -18,11 +19,17 @@ public class FieldCentricDrive extends LinearOpMode {
     private DcMotor leftBackDrive;
     private DcMotor rightBackDrive;
 
+    private DcMotor swingArm;
+    private DcMotor extendArm;
+    private DcMotor spinMotor;
+    private Servo flipServo;
+
     private double maxSpeed = 1;
     private double botHeading;
     private double turnSpeed = 1;
 
-
+    private double swingSpeed = 0.5;
+    private double extendSpeed = 0.3;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -30,6 +37,10 @@ public class FieldCentricDrive extends LinearOpMode {
         leftFrontDrive = hardwareMap.dcMotor.get("LFD");
         rightBackDrive = hardwareMap.dcMotor.get("RBD");
         rightFrontDrive = hardwareMap.dcMotor.get("RFD");
+
+        extendArm = hardwareMap.dcMotor.get("extend");
+        swingArm = hardwareMap.dcMotor.get("swing");
+        flipServo = hardwareMap.get(Servo.class, "flip");
 
         rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -107,5 +118,39 @@ public class FieldCentricDrive extends LinearOpMode {
 
     }
 
+    //bakje spinnen met motor is triggers, arm swing is bumpers, arm uitschuiven is a en b, bakje kantelen met servo is dpad up en down
+    public void ArmControl(){
+        if(gamepad2.left_bumper){
+            swingArm.setPower(-swingSpeed);
+        }if(gamepad2.right_bumper){
+            swingArm.setPower(swingSpeed);
+        }
+
+        if(gamepad2.a){
+            extendArm.setPower(-extendSpeed);
+        }if(gamepad2.b){
+            extendArm.setPower(extendSpeed);
+        }
+
+        if(gamepad2.left_trigger > 0){
+            spinMotor.setPower(-1);
+        }if(gamepad2.right_trigger > 0){
+            spinMotor.setPower(1);
+        }
+
+        if(gamepad2.dpad_down){
+            flipServo.setPosition(0);
+        }if (gamepad2.dpad_up){
+            flipServo.setPosition(1);
+        }
+
+        Gamepad2StopMoving();
+
+    }
+    public void Gamepad2StopMoving(){
+        spinMotor.setPower(0);
+        extendArm.setPower(0);
+        swingArm.setPower(0);
+    }
 
 }

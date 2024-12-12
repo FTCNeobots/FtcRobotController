@@ -26,10 +26,10 @@ public class Bakje extends LinearOpMode {
                 motor.setPower(0);
             }
             if(gamepad1.left_bumper){
-                speed = 0.2;
+                speed = 0.5;
             }
             if(gamepad1.right_bumper){
-                speed =0.5;
+                speed =1;
             }
 
         }
