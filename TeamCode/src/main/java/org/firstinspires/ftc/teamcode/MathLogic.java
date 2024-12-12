@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-public class mathLogic {
+public class MathLogic {
 
     /**
      * zet een double tussen een bepaalde range

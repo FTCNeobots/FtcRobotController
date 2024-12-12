@@ -84,10 +84,10 @@ public class FieldCentricDrive extends LinearOpMode {
         _X = _X *1.1;
 
 
-        double _LFSpeed = mathLogic.Clamp(_Y - _X + _Turn, -1, 1)*maxSpeed;
-        double _LBSpeed = mathLogic.Clamp(_Y + _X + _Turn, -1, 1)*maxSpeed;
-        double _RBSpeed = mathLogic.Clamp(_Y - _X - _Turn, -1, 1)*maxSpeed;
-        double _RFSpeed = mathLogic.Clamp(_Y + _X - _Turn, -1, 1)*maxSpeed;
+        double _LFSpeed = MathLogic.Clamp(_Y - _X + _Turn, -1, 1)*maxSpeed;
+        double _LBSpeed = MathLogic.Clamp(_Y + _X + _Turn, -1, 1)*maxSpeed;
+        double _RBSpeed = MathLogic.Clamp(_Y - _X - _Turn, -1, 1)*maxSpeed;
+        double _RFSpeed = MathLogic.Clamp(_Y + _X - _Turn, -1, 1)*maxSpeed;
 
         telemetry.addData("Left front ", _LFSpeed);
         telemetry.addData("Left back ", _LBSpeed);
