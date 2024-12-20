@@ -28,8 +28,8 @@ public class FieldCentricDrive extends LinearOpMode {
     private double botHeading;
     private double turnSpeed = 1;
 
-    private double swingSpeed = 0.5;
-    private double extendSpeed = 0.3;
+    private double swingSpeed = 1;
+    private double extendSpeed = 1    ;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -40,6 +40,7 @@ public class FieldCentricDrive extends LinearOpMode {
 
         extendArm = hardwareMap.dcMotor.get("extend");
         swingArm = hardwareMap.dcMotor.get("swing");
+        spinMotor = hardwareMap.dcMotor.get("spin");
         flipServo = hardwareMap.get(Servo.class, "flip");
 
         rightFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -61,6 +62,7 @@ public class FieldCentricDrive extends LinearOpMode {
         while (opModeIsActive()){
             NormalDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             SpeedControl();
+            ArmControl();
 
             // This button choice was made so that it is hard to hit on accident,
             if (gamepad1.back) {
@@ -80,7 +82,8 @@ public class FieldCentricDrive extends LinearOpMode {
 
         double _X = _Xget * Math.cos(botHeading) - _Yget * Math.sin(botHeading);
         double _Y = _Xget * Math.sin(botHeading) + _Yget * Math.cos(botHeading);
-        double _Turn = _Turnget * turnSpeed;
+        ///die negatief hoort niet te hoeven, maar helpt wel
+        double _Turn = -_Turnget * turnSpeed;
         _X = _X *1.1;
 
 

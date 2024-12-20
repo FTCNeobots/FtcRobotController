@@ -3,11 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
-@Autonomous(name = "auto")
-public class Auto extends LinearOpMode {
+@Autonomous(name = "Long")
+public class Long extends LinearOpMode {
 
     private DcMotor leftFrontDrive;
     private DcMotor rightFrontDrive;
@@ -40,7 +39,9 @@ public class Auto extends LinearOpMode {
 
         waitForStart();
 
-        Strafe(0.5, 100);
+        Straight(0.5, 60);
+        Strafe(0.3, 300);
+        Straight(0.3, -70);
 
 
         telemetry.addData("Path", "Complete");
