@@ -27,7 +27,7 @@ public class DriveToBreda extends LinearOpMode {
     private double botHeading;
     private double turnSpeed = 1;
 
-    private double swingSpeed = 1;
+    private double swingSpeed = 0.75;
     private double liftSpeed = 1    ;
 
     @Override
@@ -142,7 +142,7 @@ public class DriveToBreda extends LinearOpMode {
         if(gamepad2.dpad_up){
             clawServo.setPosition(0.1);
         }if (gamepad2.dpad_down){
-            clawServo.setPosition(0.45);
+            clawServo.setPosition(0.46);
         }
         Gamepad2StopMoving();
 

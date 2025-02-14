@@ -39,7 +39,7 @@ public class Short extends LinearOpMode {
 
         waitForStart();
 
-        Strafe(0.5, 20);
+        Strafe(0.5, -20);
 
 
         telemetry.addData("Path", "Complete");

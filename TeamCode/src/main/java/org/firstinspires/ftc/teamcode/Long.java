@@ -14,7 +14,7 @@ public class Long extends LinearOpMode {
     private DcMotor rightBackDrive;
     //according to REV 28 per revolution, *15 because of gearbox
     double countsPerRevolution = 28 * 15;
-    double cmPerRevolution = 35.87;
+    double cmPerRevolution = 37;
     double ticksPerCm = countsPerRevolution/cmPerRevolution;
     double rotationRatio = 6.2;
     double power = 0.5;
@@ -39,9 +39,9 @@ public class Long extends LinearOpMode {
 
         waitForStart();
 
-        Straight(0.5, 60);
-        Strafe(0.3, 300);
-        Straight(0.3, -70);
+        Straight(0.5, -60);
+        Strafe(0.3, -340);
+        Straight(0.3, 90);
 
 
         telemetry.addData("Path", "Complete");
