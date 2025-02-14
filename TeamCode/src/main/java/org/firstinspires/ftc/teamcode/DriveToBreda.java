@@ -23,7 +23,7 @@ public class DriveToBreda extends LinearOpMode {
     private DcMotor liftMotor;
     private Servo clawServo;
 
-    private double maxSpeed = 1;
+    private double maxSpeed = 0.5;
     private double botHeading;
     private double turnSpeed = 1;
 
@@ -104,14 +104,14 @@ public class DriveToBreda extends LinearOpMode {
     }
     private void SpeedControl(){
         if(gamepad1.left_bumper){
-            maxSpeed = 0.5;
-            turnSpeed = 2;
+            maxSpeed = 0.25;
+            turnSpeed = 4;
 
             telemetry.addData("Max speed ", maxSpeed);
             telemetry.update();
         }else if(gamepad1.right_bumper){
-            maxSpeed = 1;
-            turnSpeed = 1;
+            maxSpeed = 0.5;
+            turnSpeed = 2;
 
             telemetry.addData("Max speed ", maxSpeed);
             telemetry.update();
@@ -140,11 +140,10 @@ public class DriveToBreda extends LinearOpMode {
         }
 
         if(gamepad2.dpad_up){
-            clawServo.setPosition(0);
+            clawServo.setPosition(0.1);
         }if (gamepad2.dpad_down){
-            clawServo.setPosition(1);
+            clawServo.setPosition(0.45);
         }
-
         Gamepad2StopMoving();
 
     }
