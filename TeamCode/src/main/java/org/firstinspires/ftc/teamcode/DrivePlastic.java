@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
-@TeleOp(name = "DriveToBreda")
-public class DriveToBreda extends LinearOpMode {
+@TeleOp(name = "DrivePlastic")
+public class DrivePlastic extends LinearOpMode {
 
     private DcMotor leftFrontDrive;
     private DcMotor rightFrontDrive;

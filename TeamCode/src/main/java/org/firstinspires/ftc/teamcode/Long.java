@@ -41,7 +41,7 @@ public class Long extends LinearOpMode {
 
         Straight(0.5, -60);
         Strafe(0.3, -340);
-        Straight(0.3, 90);
+        Straight(0.3, 80);
 
 
         telemetry.addData("Path", "Complete");
