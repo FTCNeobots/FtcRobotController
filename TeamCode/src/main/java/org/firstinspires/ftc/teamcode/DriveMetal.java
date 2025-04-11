@@ -104,8 +104,8 @@ public class DriveMetal extends LinearOpMode {
     }
     private void SpeedControl(){
         if(gamepad1.left_bumper){
-            maxSpeed = 0.25;
-            turnSpeed = 4;
+            maxSpeed = 1;
+            turnSpeed = 1;
 
             telemetry.addData("Max speed ", maxSpeed);
             telemetry.update();
@@ -138,11 +138,12 @@ public class DriveMetal extends LinearOpMode {
         }if(gamepad2.right_trigger > 0){
             liftMotor.setPower(0.5 * liftSpeed);
         }
-
+        //dicht
         if(gamepad2.dpad_down){
-            clawServo.setPosition(0.1);
+            clawServo.setPosition(0.06);
+            //open
         }if (gamepad2.dpad_up){
-            clawServo.setPosition(0.46);
+            clawServo.setPosition(0.37);
         }
         Gamepad2StopMoving();
 
