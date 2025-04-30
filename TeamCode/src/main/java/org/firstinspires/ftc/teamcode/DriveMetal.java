@@ -28,7 +28,10 @@ public class DriveMetal extends LinearOpMode {
     private double turnSpeed = 1;
 
     private double swingSpeed = 0.75;
-    private double liftSpeed = 1    ;
+    private double liftSpeed = 1;
+
+    private int liftPosUp = 7400;
+    private int liftPosMid = 3800;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,6 +50,9 @@ public class DriveMetal extends LinearOpMode {
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFrontDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Retrieve the IMU from the hardware map
         IMU imu = hardwareMap.get(IMU.class, "imu");
         // Adjust the orientation parameters to match your robot
@@ -57,7 +63,7 @@ public class DriveMetal extends LinearOpMode {
         imu.initialize(parameters);
 
         waitForStart();
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             NormalDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             SpeedControl();
             ArmControl();
@@ -76,19 +82,19 @@ public class DriveMetal extends LinearOpMode {
 
     }
 
-    private void NormalDrive(double _Xget, double _Yget, double _Turnget){
+    private void NormalDrive(double _Xget, double _Yget, double _Turnget) {
 
         double _X = _Xget * Math.cos(botHeading) - _Yget * Math.sin(botHeading);
         double _Y = _Xget * Math.sin(botHeading) + _Yget * Math.cos(botHeading);
         ///die negatief hoort niet te hoeven, maar helpt wel
         double _Turn = -_Turnget * turnSpeed;
-        _X = _X *1.1;
+        _X = _X * 1.1;
 
 
-        double _LFSpeed = MathLogic.Clamp(_Y - _X + _Turn, -1, 1)*maxSpeed;
-        double _LBSpeed = MathLogic.Clamp(_Y + _X + _Turn, -1, 1)*maxSpeed;
-        double _RBSpeed = MathLogic.Clamp(_Y - _X - _Turn, -1, 1)*maxSpeed;
-        double _RFSpeed = MathLogic.Clamp(_Y + _X - _Turn, -1, 1)*maxSpeed;
+        double _LFSpeed = MathLogic.Clamp(_Y - _X + _Turn, -1, 1) * maxSpeed;
+        double _LBSpeed = MathLogic.Clamp(_Y + _X + _Turn, -1, 1) * maxSpeed;
+        double _RBSpeed = MathLogic.Clamp(_Y - _X - _Turn, -1, 1) * maxSpeed;
+        double _RFSpeed = MathLogic.Clamp(_Y + _X - _Turn, -1, 1) * maxSpeed;
 
         telemetry.addData("Left front ", _LFSpeed);
         telemetry.addData("Left back ", _LBSpeed);
@@ -102,14 +108,15 @@ public class DriveMetal extends LinearOpMode {
         rightFrontDrive.setPower(_RFSpeed);
 
     }
-    private void SpeedControl(){
-        if(gamepad1.left_bumper){
+
+    private void SpeedControl() {
+        if (gamepad1.left_bumper) {
             maxSpeed = 1;
             turnSpeed = 1;
 
             telemetry.addData("Max speed ", maxSpeed);
             telemetry.update();
-        }else if(gamepad1.right_bumper){
+        } else if (gamepad1.right_bumper) {
             maxSpeed = 0.5;
             turnSpeed = 2;
 
@@ -120,37 +127,50 @@ public class DriveMetal extends LinearOpMode {
     }
 
     //bakje spinnen met motor is triggers, arm swing is bumpers, arm uitschuiven is a en b, bakje kantelen met servo is dpad up en down
-    public void ArmControl(){
-        if(gamepad2.a){
+    public void ArmControl() {
+        if (gamepad2.a) {
             swingMotor.setPower(-swingSpeed);
-        }if(gamepad2.b){
+        }
+        if (gamepad2.b) {
             swingMotor.setPower(swingSpeed);
         }
-
-        if(gamepad2.left_bumper){
-            liftMotor.setPower(-liftSpeed);
-        }if(gamepad2.right_bumper){
-            liftMotor.setPower(liftSpeed);
+        if (gamepad2.left_bumper){
+            Lift(0, 1);
         }
-
-        if(gamepad2.left_trigger > 0){
-            liftMotor.setPower(-0.5 * liftSpeed);
-        }if(gamepad2.right_trigger > 0){
-            liftMotor.setPower(0.5 * liftSpeed);
+        if (gamepad2.right_bumper){
+            Lift(2 ,1);
+        }
+        if(gamepad2.right_trigger > 0){
+            Lift(1, 1);
         }
         //dicht
-        if(gamepad2.dpad_down){
+        if (gamepad2.dpad_down) {
             clawServo.setPosition(0.06);
             //open
-        }if (gamepad2.dpad_up){
+        }
+        if (gamepad2.dpad_up) {
             clawServo.setPosition(0.37);
         }
         Gamepad2StopMoving();
 
     }
-    public void Gamepad2StopMoving(){
-        liftMotor.setPower(0);
+
+    public void Gamepad2StopMoving() {
+        //liftMotor.setPower(0);
         swingMotor.setPower(0);
+    }
+
+    private void Lift(int trueForUp, double speed) {
+
+        if (trueForUp == 2) {
+            liftMotor.setTargetPosition(liftPosUp);
+        } else if (trueForUp == 1){
+            liftMotor.setTargetPosition(liftPosMid);
+        }else {
+            liftMotor.setTargetPosition(0);
+        }
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setPower(speed);
     }
 
 }
