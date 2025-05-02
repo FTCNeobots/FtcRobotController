@@ -31,7 +31,7 @@ public class DriveMetal extends LinearOpMode {
     private double liftSpeed = 1;
 
     private int liftPosUp = 7400;
-    private int liftPosMid = 3800;
+    private int liftPosMid = 3300;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -172,5 +172,17 @@ public class DriveMetal extends LinearOpMode {
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(speed);
     }
+    private void EncoderReset(){
+        if(gamepad2.left_trigger > 0){
+            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            while(gamepad2.left_trigger > 0){
+                liftMotor.setPower(-1);
+            }
+            liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+    }
+
 
 }
