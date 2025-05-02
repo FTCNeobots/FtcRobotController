@@ -32,6 +32,7 @@ public class DriveMetal extends LinearOpMode {
 
     private int liftPosUp = 7400;
     private int liftPosMid = 3300;
+    private boolean resetUsingEncoder = true;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -67,6 +68,7 @@ public class DriveMetal extends LinearOpMode {
             NormalDrive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             SpeedControl();
             ArmControl();
+            EncoderReset();
 
             // This button choice was made so that it is hard to hit on accident,
             if (gamepad1.back) {
@@ -173,11 +175,14 @@ public class DriveMetal extends LinearOpMode {
         liftMotor.setPower(speed);
     }
     private void EncoderReset(){
-        if(gamepad2.left_trigger > 0){
+        if(gamepad2.left_trigger > 0) {
             liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            while(gamepad2.left_trigger > 0){
-                liftMotor.setPower(-1);
-            }
+            liftMotor.setPower(-0.5);
+            resetUsingEncoder = true;
+        }
+        if(gamepad2.left_trigger == 0 && resetUsingEncoder){
+            liftMotor.setPower(0);
+            resetUsingEncoder = false;
             liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
